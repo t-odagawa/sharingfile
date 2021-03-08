@@ -83,5 +83,5 @@ int main (int argc, char *argv[]) {
   }
 
   BOOST_LOG_TRIVIAL(info) << "=====Finish!=====";
-  std::exit(1);
+  std::exit(0);
 }
