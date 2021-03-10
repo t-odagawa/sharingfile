@@ -19,6 +19,7 @@ public :
   int32_t pl, ecc_id, fixedwall_id, trackerwall_id, spotid, zone[2], rawid[2], unix_time, tracker_track_id;
 };
 
+namespace logging = boost::log;
 
 int main (int argc, char *argv[]) {
 
@@ -31,17 +32,26 @@ int main (int argc, char *argv[]) {
 
   if (argc != 3) {
     BOOST_LOG_TRIVIAL(info) << "Usage : " << argv[0]
-			    << " <inpput ninjasf file path> <output txt file path>";
+			    << " <input ninjasf file path> <output txt file path>";
     std::exit(1);
   }
 
   try {
 
+#ifdef TEXT_MODE
+    std::ifstream ifs(argv[1]);
+#else
     std::ifstream ifs(argv[1], std::ios::binary);
+#endif
     Sharing_file t;
 
     std::ofstream ofs(argv[2]);
+#ifdef TEXT_MODE
+    int32_t tmp;
+    while (ifs >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> t.unix_time >> tmp) {
+#else
     while (ifs.read((char*)& t, sizeof(Sharing_file))) {
+#endif
       time_t unixtime = (time_t)t.unix_time;
       tm *tm_event = localtime(&unixtime);
 
@@ -50,7 +60,7 @@ int main (int argc, char *argv[]) {
       int day = tm_event->tm_mday;
       BOOST_LOG_TRIVIAL(debug) << year << "-" << month << "-" << day;
 
-      std::string filedir = "~/data/hitconv/";
+      std::string filedir = "/home/t2k/odagawa/data/hitconv/";
       std::string filename = filedir + "neutrino_b2physics_fullsetup_fullstat_timedifcut0_loose_ninja_";
       filename += std::to_string(year) + "_" + std::to_string(month) + "_" + std::to_string(day);
       filename += ".root";

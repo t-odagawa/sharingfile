@@ -58,6 +58,10 @@ endif ()
 # Set install paths for binaries, libraries and headers
 set(CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
 
+if (${TEXT_MODE})
+   add_Definitions(-DTEXT_MODE=ON)
+endif()
+
 ################ Find packages ################
 
 # where to look first for cmake modules
