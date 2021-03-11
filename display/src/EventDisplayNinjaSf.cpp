@@ -17,6 +17,7 @@
 class Sharing_file {
 public :
   int32_t pl, ecc_id, fixedwall_id, trackerwall_id, spotid, zone[2], rawid[2], unix_time, tracker_track_id;
+  int32_t group_id;
 };
 
 namespace logging = boost::log;
@@ -46,9 +47,10 @@ int main (int argc, char *argv[]) {
     Sharing_file t;
 
     std::ofstream ofs(argv[2]);
+
 #ifdef TEXT_MODE
     int32_t tmp;
-    while (ifs >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> t.unix_time >> tmp) {
+    while (ifs >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> t.unix_time >> tmp >> t.group_id) {
 #else
     while (ifs.read((char*)& t, sizeof(Sharing_file))) {
 #endif
@@ -79,8 +81,9 @@ int main (int argc, char *argv[]) {
 	  << std::setw(5) << std::setprecision(0) << year << " "
 	  << std::setw(3) << std::setprecision(0) << month << " "
 	  << std::setw(3) << std::setprecision(0) << day << " "
-	  << std::setw(6) << std::setprecision(0) << entry << std::endl;
-
+	  << std::setw(6) << std::setprecision(0) << entry << " "
+	  << std::setw(9) << std::setprecision(0) << t.group_id << std::endl;
+      BOOST_LOG_TRIVIAL(info) << "Corresponding entry : " << entry;
     }
 
 
